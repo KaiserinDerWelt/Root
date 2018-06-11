@@ -1,20 +1,23 @@
 /* 
 Author: Alexandra Aguirre
 Created: 6-5-18
-Modified: 6-7-18
+Modified: 6-11-18
+
+Solution to Root Interview Problem
+Located in README.md
 
 NOTES: 
 // need to check command                                                            Done: 6/7/18
 // need to check if a driver has had no trips                                       Done: 6/7/18                              
-// need to check if a trip should be discarded                                      
+// need to check if a trip should be discarded                                      Done: 6/11/18                        
 // need to convert start & end times to ints                                        Done: 6/7/18
 // need to calculate total time driven                                              Done: 6/7/18
 // need to calculate average MPH                                                    Done: 6/7/18
 // need to add drivers, average MPH, and total miles driven all to one data set     Done: 6/7/18
 // need to generate report (sort the output from most miles to least)               Done: 6/7/18
-// need to update read me
+// need to update read me                                                           Done: 6/10/18
 // need to make hashmaps global for easier access                                   Done: 6/7/18
-// change 'Driver' and 'Trip' to be lowercase for errors                            Done: 6/10/18t
+// change 'Driver' and 'Trip' to be lowercase for errors                            Done: 6/10/18
 */
 
 import java.io.*;
@@ -31,9 +34,8 @@ public class TrackDrivingHistory
     static HashMap<String, Double> milesDriven = new HashMap<>();
 
     // calculations for a trip
-    public static void calculateTrip(String driver, String start, String end, String miles)
+    public static void calculateTrip(String driver, String start, String end, Double driverMiles)
     {
-        Double driverMiles = Double.parseDouble(miles);
 
         // conver the start time to integers
         int startHour = Integer.parseInt(start.substring(0,2));
@@ -45,25 +47,32 @@ public class TrackDrivingHistory
 
         // calculate the trip time
         double time = tripTime(startHour, startMin, endHour, endMin);
+        
+        // get the average MPH for this trip
+        int tripAvg = avgMPH(driverMiles, time);
 
-        // check if the driver has taken a trip before
-        if(driversTime.get(driver) != 0)
-        {   
-            // total time the driver has driven so far
-            driversTime.put(driver, driversTime.get(driver) + time);
-            milesDriven.put(driver, milesDriven.get(driver) + driverMiles);
-        }
-        // set the time and miles for the first time
-        else
+        // trip should not be discarded, continue calculations
+        if(tripAvg > 5 && tripAvg < 100) 
         {
-            // total time the driver has driven so far
-            driversTime.put(driver, time);
-            milesDriven.put(driver, driverMiles);
-        }
+            // check if the driver has taken a trip before
+            if(driversTime.get(driver) != 0)
+            {   
+                // total time the driver has driven so far
+                driversTime.put(driver, driversTime.get(driver) + time);
+                milesDriven.put(driver, milesDriven.get(driver) + driverMiles);
+            }
+            // set the time and miles for the first time
+            else
+            {
+                // total time the driver has driven so far
+                driversTime.put(driver, time);
+                milesDriven.put(driver, driverMiles);
+            }
 
-        // add the average for the driver
-        int avg = avgMPH(milesDriven.get(driver), driversTime.get(driver));
-        driversMPH.put(driver, avg);
+            // add the average for the driver
+            int avg = avgMPH(milesDriven.get(driver), driversTime.get(driver));
+            driversMPH.put(driver, avg);
+        }
     }
 
     // calculates how long the person was driving for
@@ -145,7 +154,7 @@ public class TrackDrivingHistory
                 String driver = sc.next();
                 driversTime.put(driver, (double)0);
             }
-            // comand: Trip
+            // command: Trip
             else if(word.compareTo("trip") == 0)
             {
                 // grab the data from the current trip
@@ -154,8 +163,12 @@ public class TrackDrivingHistory
                 String end = sc.next();
                 String miles = sc.next();
 
+                Double driverMiles = Double.parseDouble(miles);
+                
                 // calculations for current trip
-                calculateTrip(driver, start, end, miles);
+                calculateTrip(driver, start, end, driverMiles);
+            
+
             }
         }
 
