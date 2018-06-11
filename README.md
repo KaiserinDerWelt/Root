@@ -31,15 +31,18 @@ Generate a report containing each driver with total miles driven and average spe
 
 Example input:
 
-`Driver Dan
+```
+Driver Dan
 Driver Alex
 Driver Bob
 Trip Dan 07:15 07:45 17.3
 Trip Dan 06:12 06:32 21.8
-Trip Alex 12:01 13:16 42.0`
+Trip Alex 12:01 13:16 42.0
+```
 
 Expected output:
-
-`Alex: 42 miles @ 34 mph
+```
+Alex: 42 miles @ 34 mph
 Dan: 39 miles @ 47 mph
 Bob: 0 miles`
+```
