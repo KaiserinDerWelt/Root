@@ -14,6 +14,7 @@ NOTES:
 // need to generate report (sort the output from most miles to least)               Done: 6/7/18
 // need to update read me
 // need to make hashmaps global for easier access                                   Done: 6/7/18
+// change 'Driver' and 'Trip' to be lowercase for errors                            Done: 6/10/18t
 */
 
 import java.io.*;
@@ -120,7 +121,7 @@ public class TrackDrivingHistory
                     if(values.get(i) == 0)
                         System.out.println(key + ": " + miles + " miles");
                     else
-                        System.out.println(key + ": " + miles + " miles @ " + driversMPH.get(key));
+                        System.out.println(key + ": " + miles + " miles @ " + driversMPH.get(key) + " mph");
                 }
             }           
         }
@@ -135,17 +136,17 @@ public class TrackDrivingHistory
         while(sc.hasNextLine())
         {
             // checks the current command
-            String word = sc.next();
+            String word = sc.next().toLowerCase();
 
             // command: Driver
             // add the new driver to the hashmaps
-            if(word.compareTo("Driver") == 0)
+            if(word.compareTo("driver") == 0)
             {
                 String driver = sc.next();
                 driversTime.put(driver, (double)0);
             }
             // comand: Trip
-            else if(word.compareTo("Trip") == 0)
+            else if(word.compareTo("trip") == 0)
             {
                 // grab the data from the current trip
                 String driver = sc.next();
