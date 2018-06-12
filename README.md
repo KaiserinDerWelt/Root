@@ -1,14 +1,41 @@
-# Root Interview Solution
+# Set Up
+To use this code, you must have Java JDK 7+ installed. If you do not have Java, you may obtain it by following the instructions at https://java.com/en/download/help/download_options.xml . You do not need NetBeans or Eclipsed installed to run this, all commands and compilation can be done through the terminal.
+
+# Usage
+Once you have ensured that Java is installed in your machine, 
+1. Download or git clone the repository onto your computer
+2. Through the terminal, access the source file with `cd Root/src/`
+3. Compile the code with `javac TrackDrivingHistory.java`
+4. Run it with the file with `java TrackDrivingHistory input.txt`
+
+The output will appear in a textfile titled `output.txt`
+
+To test the code, please following the instructions in the `Testing` outline.
+
+# Root Interview Solution Implementation
 To solve this problem, I went with Java and the sourcecode is `TrackDrivingHistory.java`. My thought process was to use three seperate HashMaps to contain all of the driver's information because they have an O(1) insertion time, O(1) lookup time, and O(n) to iterate through values. These three HashMaps are used to track how the total time a driver was on the road, the total miles a driver drove, and the average MPH the driver achieved.
 
-First, the Java program will receive the input text file and a while loop will run, parsing each line, until there is no more lines of text in the input file. In this while loop, it will parse each word of the file. First, it will change first word in the line to lowercase (in case a user made a typo). This will check if the word is "Driver" by using a `.compareTo("driver") == 0`. If the word is "Driver", it will parse the next word and add that new driver to the HashMap for the time a driver was on the road, with an initial value of 0. This is under the assumption that no two (or more) drivers will have the same name. If the word is not "Driver", it will check if the (now lowercase) word is "Trip" by using a comparison as well, `.compareTo("trip") == 0`. When the word is "Trip", it will pare the next four words in order as the driver, the start time, the end time, and the miles driven. 
-
-Once this data is parse, it will be sent to the `calculateTrip()` method. Here, the start time, end time, and miles will be parsed to their correct data types. Then, the start and end times are sent to another method, `tripTime()` that will calculate the total amount the driver drove for that trip. After this is returned, an if statement is used to see if a driver has taken a trip before or not. If the driver has taken a trip before, the driver's time is updated in the HashMap for driver's time and the amount of miles driven will be updated in the respective HashMap, as well. If not, the driver's time and miles will be added to their respective HashMaps for the first time. As soon as these are checked and done, a method called `avgMPH()` will calculate the average MPH the driver has achieved by getting the values from the HashMaps that were used to store the driver's time and miles. The lookup time for both of the HashMaps are O(1). This new average MPH time will be added to the third HashMap, the one used to track the driver's average MPH. This one does not need to check if there was data in that driver's key for the HashMap before as it can override the previous value because the `avgMPH()` method uses the latest total time and total miles driven for the driver.
-
-When the while loop has finished, because there are no more lines in the text file, the `printReport()` method will be called to show the final results. These results are outputed to the terminal. Here, the first step if to check if any driver's time is equal to zero. If so, we will add a 0 for that driven in the total miles driven HashMap. Then, a new list is created to sort the values in the miles driven HashMap because the output is done from most miles driven to least. This is done with `Collections.sort()` and takes O(n * log(n)) time. The sorting will not be done until the method is called. Next, to have the values from most miles driven to least, I used `Collections.reverse()` because the soritng is done from smallest value to biggest. Finally, the output is printed through a double for loop with runtime O(n^2) (unfortunately). The first for loop is used to iterate through each value of the newly created list of miles driven, and the second for loop is used to iterate through every key in the miles driven HashMap. Then, the method checks if that key's value is equal to the value of the current index in the new list, and if so, it will print the result. If the current value is 0, because that person did not take a trip, the output will be `(Driver): 0 miles`. Otherwise, the output will be `(Driver): x miles @ y mph`. 
+You will notice in the git history that each commit was to add a new step to the code or include test cases. The code was done step by step, breaking the problem into smaller, easier problems and working my way back up from there. In each commit, the source file has a `NOTES:` section that shows what was completed and when. Also, the code has comments explaining more of the mechanisms of each method.
 
 # Testing
-Testing process...
+The testing process was done through the use of a bash script. There are 7 test cases, each for a different test:
+1. Tests if the code catches more than 1 driver who has not taken a trip
+2. Tests if the code discards any trips that average less than 5 MPH or more than 100 MPH
+3. Tests if the code catches any typos with the commands (`Driver` and `Trip`)
+4. Tests if the code catches two drivers who average the same miles and MPH in their total trips.
+5. Tests if the code catches and discards any drivers who take a trip but were not inputted as a driver.
+6. Tests if the code catches displays the correct output when there are only drivers and no trips.
+7. Tests if the code catches when there are drivers are a trip.
+
+To run the bash script, make sure you are in the `/src/` file in the terminal and type `bash test-all.sh`. 
+
+This script works by compiling the `TrackDrivingHistory.java` file and using the given tests files (ex: `Test01.txt`) as the input, and comparing the `output.txt` file that is created with the solution test file (ex: `TestSol01.txt`). If the test cases passes, the output will be `PASS`, but if it fails the output will be `fail (output does not match)`. 
+
+# Assumptions
+There are a few assumptions I have made with this code that were not specified in the problem statement:
+1. A new driver may be added after someone else's trip has been recorded
+2. No two drivers will have the same first name
+3. If a trip is given with a driver who has not been recorded with the driver command yet, discard it
 
 # Problem Statement
 Let's write some code to track driving history for people.
