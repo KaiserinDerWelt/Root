@@ -5,19 +5,6 @@ Modified: 6-11-18
 
 Solution to Root Interview Problem
 Located in README.md
-
-NOTES: 
-// need to check command                                                            Done: 6/7/18
-// need to check if a driver has had no trips                                       Done: 6/7/18                              
-// need to check if a trip should be discarded                                      Done: 6/11/18                        
-// need to convert start & end times to ints                                        Done: 6/7/18
-// need to calculate total time driven                                              Done: 6/7/18
-// need to calculate average MPH                                                    Done: 6/7/18
-// need to add drivers, average MPH, and total miles driven all to one data set     Done: 6/7/18
-// need to generate report (sort the output from most miles to least)               Done: 6/7/18
-// need to update read me                                                           Done: 6/10/18
-// need to make hashmaps global for easier access                                   Done: 6/7/18
-// change 'Driver' and 'Trip' to be lowercase for errors                            Done: 6/10/18
 */
 
 import java.io.*;
@@ -30,6 +17,12 @@ public class TrackDrivingHistory
     static HashMap<String, Double> driversTime = new HashMap<>();
     static HashMap<String, Integer> driversMPH = new HashMap<>();
     static HashMap<String, Double> milesDriven = new HashMap<>();
+
+    // TrackDrivingHistory(String fileName)
+    // {
+    //     //File file = new File(fileName);
+    //     main(fileName);
+    // }
 
     // calculations for a trip
     public static void calculateTrip(String driver, String start, String end, Double driverMiles)
@@ -52,7 +45,10 @@ public class TrackDrivingHistory
         // trip should not be discarded, continue calculations
         if(tripAvg > 5 && tripAvg < 100) 
         {
-            // check if the driver has taken a trip before
+            // make sure the driver exists
+            if(driversTime.get(driver) != null)
+            {
+                 // check if the driver has taken a trip before
             if(driversTime.get(driver) != 0)
             {   
                 // total time the driver has driven so far
@@ -70,6 +66,7 @@ public class TrackDrivingHistory
             // add the average for the driver
             int avg = avgMPH(milesDriven.get(driver), driversTime.get(driver));
             driversMPH.put(driver, avg);
+            }
         }
     }
 
@@ -97,8 +94,11 @@ public class TrackDrivingHistory
     }
 
     // print the results
-    public static void printReport()
+    public static void printReport() throws IOException
     {
+        // create output file
+        FileWriter writer = new FileWriter("output.txt", true);
+        BufferedWriter bw = new BufferedWriter(writer);
 
         for(String key : driversTime.keySet())
         {
@@ -124,19 +124,49 @@ public class TrackDrivingHistory
                     // round the miles
                     int miles = (int)Math.round(values.get(i));
 
-                    // print the output
-                    if(values.get(i) == 0)
-                        System.out.println(key + ": " + miles + " miles");
+                    // get rid of extra space at the end of the output file
+                    if(i == values.size() - 1)
+                    {
+                        // print the correct output
+                        if(values.get(i) == 0)
+                            bw.write(key + ": " + miles + " miles");
+                        else
+                            bw.write(key + ": " + miles + " miles @ " + driversMPH.get(key) + " mph");
+                    }
                     else
-                        System.out.println(key + ": " + miles + " miles @ " + driversMPH.get(key) + " mph");
+                    {
+                        // print the correct output
+                        if(values.get(i) == 0)
+                            bw.write(key + ": " + miles + " miles" + System.lineSeparator());
+                        else
+                            bw.write(key + ": " + miles + " miles @ " + driversMPH.get(key) + " mph" + System.lineSeparator());
+                    }
+
+                    
                 }
             }           
         }
+
+        bw.close();
     }
 
-    public static void main(String [] args) throws IOException
+    public static void main(String[] args ) throws IOException
     {
-        File file = new File("input.txt");
+        // File file = new File(fileName);
+
+        if(args.length < 1)
+        {
+            System.out.println("Proper syntax: java TrackDrivingHistory <filename> ");
+            return;
+        }
+        
+        // make sure the output file is blank to begin with
+        PrintWriter writer = new PrintWriter("output.txt");
+        writer.print("");
+        writer.close();
+        
+        File file = new File(args[0]);
+       
         Scanner sc = new Scanner(file);
     
         // while there is still text in the input file, compute the calculations
@@ -169,7 +199,7 @@ public class TrackDrivingHistory
 
             }
         }
-
+     //   System.out.println();
         printReport();
     }
 }
