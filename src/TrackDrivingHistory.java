@@ -37,29 +37,26 @@ public class TrackDrivingHistory
         int tripAvg = avgMPH(driverMiles, time);
 
         // trip should not be discarded, continue calculations
-        if(tripAvg >= 5 && tripAvg <= 100) 
+        // and make sure the driver exists
+        if((tripAvg >= 5 && tripAvg <= 100) && driversTime.get(driver) != null) 
         {
-            // make sure the driver exists
-            if(driversTime.get(driver) != null)
-            {
-                 // check if the driver has taken a trip before
-                if(driversTime.get(driver) != 0)
-                {   
-                    // total time the driver has driven so far
-                    driversTime.put(driver, driversTime.get(driver) + time);
-                    milesDriven.put(driver, milesDriven.get(driver) + driverMiles);
-                }
-                // set the time and miles for the first time
-                else
-                {
-                    driversTime.put(driver, time);
-                    milesDriven.put(driver, driverMiles);
-                }
-
-                // add the average for the driver
-                int avg = avgMPH(milesDriven.get(driver), driversTime.get(driver));
-                driversMPH.put(driver, avg);
+            // check if the driver has taken a trip before
+            if(driversTime.get(driver) != 0)
+            {   
+                // total time the driver has driven so far
+                driversTime.put(driver, driversTime.get(driver) + time);
+                milesDriven.put(driver, milesDriven.get(driver) + driverMiles);
             }
+            // set the time and miles for the first time
+            else
+            {
+                driversTime.put(driver, time);
+                milesDriven.put(driver, driverMiles);
+            }
+
+            // add the average for the driver
+            int avg = avgMPH(milesDriven.get(driver), driversTime.get(driver));
+            driversMPH.put(driver, avg);
         }
     }
 
@@ -69,14 +66,11 @@ public class TrackDrivingHistory
         // total amount of time on the road
         int totalH = endH - startH;
         int totalM = endM - startM;
-        double totalTime = 0;
 
         // need total hours to be in minutes to do the right conversion
         int hourToMin = totalH * 60;
 
-        totalTime = (double)(hourToMin + totalM)/(double)60;
-
-        return totalTime;
+        return (double)(hourToMin + totalM)/(double)60;
     }
 
     // calculate the average MPH driven
